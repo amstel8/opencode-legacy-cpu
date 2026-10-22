@@ -23,9 +23,9 @@ export function resolve(target: Target): Entrypoints {
       try {
         return resolveModule(specifier, target.directory)
       } catch (error) {
+        const code = typeof error === "object" && error !== null && "code" in error ? String(error.code) : undefined
         if (
-          !(error instanceof Error) ||
-          !("code" in error) ||
+          !code ||
           ![
             "ENOENT",
             "ENOTDIR",
@@ -33,7 +33,7 @@ export function resolve(target: Target): Entrypoints {
             "ERR_MODULE_NOT_FOUND",
             "ERR_PACKAGE_PATH_NOT_EXPORTED",
             "ERR_UNSUPPORTED_DIR_IMPORT",
-          ].includes(String(error.code))
+          ].includes(code)
         )
           throw error
       }

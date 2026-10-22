@@ -35,7 +35,9 @@ export function locationErrors<A, E, R>(effect: Effect.Effect<A, E, R>) {
 
 export const awaitPlugins = Plugin.awaitActivation.pipe(
   Effect.timeoutOrElse({
-    duration: "5 seconds",
+    // Cold activation on older Intel Macs can exceed five seconds. Clients such as
+    // T3 treat the resulting 503 as a failed catalog instead of retrying readiness.
+    duration: "30 seconds",
     orElse: () =>
       Effect.fail(
         new ServiceUnavailableError({

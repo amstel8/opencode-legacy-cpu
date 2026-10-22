@@ -1,3 +1,52 @@
+# OpenCode Legacy CPU
+
+OpenCode for older Intel Macs, including Core 2 Duo systems without AVX.
+This independently maintained fork starts from upstream **OpenCode 2.1.2**.
+
+- **Current build:** macOS 12 Monterey, Intel x86_64, Penryn-compatible runtime.
+- **Tested CPUs:** Core 2 Duo T9900 and Xeon X5690. Other Core 2 Duo models have
+  not all been tested; this is not a universal compatibility claim.
+- **Download:** [releases](https://github.com/amstel8/opencode-legacy-cpu/releases/latest).
+- **Build details and compatibility patches:** [NON_AVX.md](NON_AVX.md).
+
+## Install the release
+
+Download `opencode-2.1.2-darwin-x64-penryn.tar.gz` and `SHA256SUMS` from the release.
+From the download directory:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+tar -xzf opencode-2.1.2-darwin-x64-penryn.tar.gz
+cd opencode-2.1.2-darwin-x64-penryn
+shasum -a 256 -c SHA256SUMS
+mkdir -p "$HOME/.local/bin"
+if [ -f "$HOME/.local/bin/opencode" ]; then
+  cp -p "$HOME/.local/bin/opencode" "$HOME/.local/bin/opencode.rollback"
+fi
+install -m 755 opencode "$HOME/.local/bin/opencode.new"
+mv "$HOME/.local/bin/opencode.new" "$HOME/.local/bin/opencode"
+export OPENCODE_DISABLE_AUTOUPDATE=true
+"$HOME/.local/bin/opencode" --version
+```
+
+Add `$HOME/.local/bin` to `PATH` and persist `OPENCODE_DISABLE_AUTOUPDATE=true`
+in your shell or application's launch environment. An official update can
+replace the compatible runtime. Restart clients after replacing the binary.
+The executable is signed ad hoc, without Apple Developer ID notarization.
+The embedded web UI is omitted; the terminal UI and API are included.
+
+For T3 Code, use [T3 Code Legacy 0.1.1-2 or newer](https://github.com/amstel8/t3code-legacy/releases)
+and refresh the OpenCode provider catalog. That fork clears stale model variants
+when OpenCode reports that a model has no options.
+
+The build recipe requires an external, patched Bun runtime. Its checksum and
+known source-provenance limitation are documented in [NON_AVX.md](NON_AVX.md).
+
+Upstream project: [anomalyco/opencode](https://github.com/anomalyco/opencode).
+The upstream documentation follows.
+
+---
+
 <p align="center">
   <a href="https://opencode.ai">
     <picture>

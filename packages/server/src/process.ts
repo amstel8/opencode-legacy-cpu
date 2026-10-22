@@ -189,6 +189,13 @@ function dispatch(
       if (!(yield* authorizedRequest(request, auth))) return unauthorizedResponse(request)
       return yield* infoResponse(status, version, urls, tmp)
     }
+    // Pre-2.0.18 clients poll /api/status, which was renamed to /api/info. They read an
+    // authenticated 404 as "incompatible daemon" and then kill and respawn it in a loop,
+    // so answer them with the same payload until no such client is left running.
+    if (request.method === "GET" && url.pathname === "/api/status") {
+      if (!(yield* authorizedRequest(request, auth))) return unauthorizedResponse(request)
+      return yield* infoResponse(status, version, urls, tmp)
+    }
     if (
       !isPairingConnectURL(url) &&
       (!ready || (!hasPtyConnectTicketURL(url) && !hasPersistentPtyConnectTicketURL(url))) &&

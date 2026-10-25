@@ -1,6 +1,6 @@
-# OpenCode 2.1.2 for older Intel Macs
+# OpenCode 2.1.4 for older Intel Macs
 
-This fork starts at upstream tag `v2.1.2` (`a517687fde`). It keeps the upstream
+This fork starts at upstream tag `v2.1.4` (`68bc26b7da`). It keeps the upstream
 application and adds a build recipe for Intel Macs without AVX, including the
 Xeon X5690 and Core 2 Duo T9900 running macOS 12.
 
@@ -97,3 +97,43 @@ It remains bounded: a plugin that never finishes still returns HTTP 503.
 Local passwords, endpoints, machine notes, runtime binaries, and build outputs
 are not part of this fork's source changes. No release is published by the build
 script.
+
+## Processes after a T3 response
+
+T3 0.1.2 retains an idle provider session for up to 30 minutes. An OpenCode 2
+session borrows the shared server throughout that lifetime; when its last
+borrower leaves, the server owner applies a further 30-second idle deadline.
+Native background tasks can extend retention. A living `opencode serve` process
+therefore does not by itself mean the model is still generating.
+
+For this release, an isolated local model completed one request on both the
+T9900 and X5690. The API reported no active sessions, the server used about
+0.3 CPU seconds during the next 15 seconds (about 2% of one core), and SIGTERM
+stopped it within the 12-second observation limit. This does not establish that
+all long-running or tool-heavy sessions are free of the reported intermittent
+high CPU usage. Capture the active-session state and a process sample while
+that condition is present before attributing it to the runtime or T3.
+
+Upstream 2.1.4 also prevents duplicate MCP starts during initial reconciliation
+and stops MCP servers concurrently on shutdown. The legacy patches do not
+replace the session coordinator or change T3's retention policy.
+
+## Updating this fork
+
+Merge a specific upstream v2 release tag into `main`, then check the four
+compatibility patches listed above against that tag. Upstream release stamping
+can produce version-only conflicts in package manifests and `bun.lock`; retain
+the new release versions and its dependency graph. Keep the Penryn runtime pin
+unless a replacement has passed real hardware checks.
+
+Run `bun run check`. The pinned compatibility runtime predates the
+`bun check --no-script` option used by upstream 2.1.4; lint passes on that
+runtime, while typechecking uses upstream's existing CI alternative:
+
+```sh
+bun turbo typecheck:tsc --concurrency=3
+```
+
+Run focused tests from their package directories, build, and repeat catalog,
+terminal, idle and shutdown checks on the MacBook before installing or
+publishing. Keep release notes explicit about runtime and verification limits.

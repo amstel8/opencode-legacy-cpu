@@ -1,7 +1,7 @@
 # OpenCode Legacy CPU
 
 OpenCode for older Intel Macs, including Core 2 Duo systems without AVX.
-This independently maintained fork starts from upstream **OpenCode 2.1.2**.
+This independently maintained fork starts from upstream **OpenCode 2.1.4**.
 
 - **Current build:** macOS 12 Monterey, Intel x86_64, Penryn-compatible runtime.
 - **Tested CPUs:** Core 2 Duo T9900 and Xeon X5690. Other Core 2 Duo models have
@@ -11,13 +11,13 @@ This independently maintained fork starts from upstream **OpenCode 2.1.2**.
 
 ## Install the release
 
-Download `opencode-2.1.2-darwin-x64-penryn.tar.gz` and `SHA256SUMS` from the release.
+Download `opencode-2.1.4-darwin-x64-penryn.tar.gz` and `SHA256SUMS` from the release.
 From the download directory:
 
 ```sh
 shasum -a 256 -c SHA256SUMS
-tar -xzf opencode-2.1.2-darwin-x64-penryn.tar.gz
-cd opencode-2.1.2-darwin-x64-penryn
+tar -xzf opencode-2.1.4-darwin-x64-penryn.tar.gz
+cd opencode-2.1.4-darwin-x64-penryn
 shasum -a 256 -c SHA256SUMS
 mkdir -p "$HOME/.local/bin"
 if [ -f "$HOME/.local/bin/opencode" ]; then
@@ -129,18 +129,7 @@ brew install --cask opencode-desktop
 
 #### Installation Directory
 
-The install script respects the following priority order for the installation path:
-
-1. `$OPENCODE_INSTALL_DIR` - Custom installation directory
-2. `$XDG_BIN_DIR` - XDG Base Directory Specification compliant path
-3. `$HOME/bin` - Standard user binary directory (if it exists or can be created)
-4. `$HOME/.opencode/bin` - Default fallback
-
-```bash
-# Examples
-OPENCODE_INSTALL_DIR=/usr/local/bin curl -fsSL https://opencode.ai/v2/install | bash
-XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://opencode.ai/v2/install | bash
-```
+The install script installs OpenCode to `$HOME/.opencode/bin`.
 
 ### Agents
 
@@ -155,11 +144,11 @@ OpenCode includes two built-in agents you can switch between with the `Tab` key.
 Also included is a **general** subagent for complex searches and multistep tasks.
 This is used internally and can be invoked using `@general` in messages.
 
-Learn more about [agents](https://opencode.ai/docs/agents).
+Learn more about [agents](https://opencode.ai/v2/docs/agents).
 
 ### Documentation
 
-For more info on how to configure OpenCode, [**head over to our docs**](https://opencode.ai/docs).
+For more info on how to configure OpenCode, [**head over to our docs**](https://opencode.ai/v2/docs).
 
 ### Contributing
 

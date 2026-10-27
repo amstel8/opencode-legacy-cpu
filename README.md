@@ -1,7 +1,7 @@
 # OpenCode Legacy CPU
 
 OpenCode for older Intel Macs, including Core 2 Duo systems without AVX.
-This independently maintained fork starts from upstream **OpenCode 2.1.4**.
+This independently maintained fork starts from upstream **OpenCode 2.2.0**.
 
 - **Current build:** macOS 12 Monterey, Intel x86_64, Penryn-compatible runtime.
 - **Tested CPUs:** Core 2 Duo T9900 and Xeon X5690. Other Core 2 Duo models have
@@ -11,13 +11,13 @@ This independently maintained fork starts from upstream **OpenCode 2.1.4**.
 
 ## Install the release
 
-Download `opencode-2.1.4-darwin-x64-penryn.tar.gz` and `SHA256SUMS` from the release.
+Download `opencode-2.2.0-darwin-x64-penryn.tar.gz` and `SHA256SUMS` from the release.
 From the download directory:
 
 ```sh
 shasum -a 256 -c SHA256SUMS
-tar -xzf opencode-2.1.4-darwin-x64-penryn.tar.gz
-cd opencode-2.1.4-darwin-x64-penryn
+tar -xzf opencode-2.2.0-darwin-x64-penryn.tar.gz
+cd opencode-2.2.0-darwin-x64-penryn
 shasum -a 256 -c SHA256SUMS
 mkdir -p "$HOME/.local/bin"
 if [ -f "$HOME/.local/bin/opencode" ]; then

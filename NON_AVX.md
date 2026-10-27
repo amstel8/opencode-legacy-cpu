@@ -106,15 +106,14 @@ borrower leaves, the server owner applies a further 30-second idle deadline.
 Native background tasks can extend retention. A living `opencode serve` process
 therefore does not by itself mean the model is still generating.
 
-For the 2.1.4 build, an isolated local model completed one request on both the
-T9900 and X5690. The API reported no active sessions, the server used about
-0.3 CPU seconds during the next 15 seconds (about 2% of one core), and SIGTERM
-stopped it within the 12-second observation limit. The local model host was
-unavailable while building 2.2.0, so verification for this release covered
-version, TUI startup, API routes, and model listing on both machines. Repeat the
-model-request, idle and shutdown checks on the MacBook before relying on long
-sessions. None of this establishes that all tool-heavy sessions are free of the
-reported intermittent high CPU usage. Capture the active-session state and a
+For the 2.2.0 release, a local fixture model completed a real request in an
+isolated data directory on both tested CPUs. The API reported no active
+sessions, the TUI rendered, and SIGTERM stopped the server within the 12-second
+observation limit. On the T9900 the first 15 seconds after completion consumed
+about 0.38 CPU seconds (2.5% of one core). The release candidate is checked
+separately from any previously installed executable with the same version.
+This does not establish that all long or tool-heavy sessions are free of the
+reported intermittent high CPU usage. Capture active-session state and a
 process sample while that condition is present before attributing it to the
 runtime or T3.
 

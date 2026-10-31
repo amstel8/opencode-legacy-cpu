@@ -1,6 +1,6 @@
-# OpenCode 2.2.0 for older Intel Macs
+# OpenCode 2.2.5 for older Intel Macs
 
-This fork starts at upstream tag `v2.2.0` (`1097e2668b`). It keeps the upstream
+This fork starts at upstream tag `v2.2.5` (`9bbb8ce18c`). It keeps the upstream
 application and adds a build recipe for Intel Macs without AVX, including the
 Xeon X5690 and Core 2 Duo T9900 running macOS 12.
 
@@ -106,21 +106,23 @@ borrower leaves, the server owner applies a further 30-second idle deadline.
 Native background tasks can extend retention. A living `opencode serve` process
 therefore does not by itself mean the model is still generating.
 
-For the 2.2.0 release, a local fixture model completed a real request in an
-isolated data directory on both tested CPUs. The API reported no active
-sessions, the TUI rendered, and SIGTERM stopped the server within the 12-second
-observation limit. On the T9900 the first 15 seconds after completion consumed
-about 0.38 CPU seconds (2.5% of one core). The release candidate is checked
-separately from any previously installed executable with the same version.
-This does not establish that all long or tool-heavy sessions are free of the
-reported intermittent high CPU usage. Capture active-session state and a
+For the 2.2.5 release, X5690 completed a real request with the local model in
+an isolated data directory, the API reported no active sessions, the TUI
+rendered, and the authenticated routes answered. Repeat the same request, TUI
+start and route checks on the T9900 for every install; a matching version and
+signature do not establish that the installed binary is the Penryn-compatible
+one. None of this establishes that all long or tool-heavy sessions are free of
+the reported intermittent high CPU usage. Capture active-session state and a
 process sample while that condition is present before attributing it to the
 runtime or T3.
 
-Upstream 2.2.0 adds desktop plugin installation, moves the `@opencode/ai` root
-to its Promise API, and requires OpenTUI 0.7 for TUI plugins. It also includes
-the duplicate-MCP-start and concurrent-shutdown fixes from 2.1.4. The legacy
-patches do not replace the session coordinator or change T3's retention policy.
+Upstream 2.2.5 is the fifth patch release after 2.2.0 and adds a percentage
+compaction buffer, worktree and shell-mode shortcuts, interactive artifacts,
+persistent desktop terminals, and MCP transport fixes for large stdio messages.
+It keeps the desktop plugin installation, Promise-based `@opencode/ai` root and
+OpenTUI 0.7 TUI plugin requirement from 2.2.0, along with the duplicate-MCP-start
+and concurrent-shutdown fixes from 2.1.4. The legacy patches do not replace the
+session coordinator or change T3's retention policy.
 
 ## Updating this fork
 
@@ -131,7 +133,7 @@ the new release versions and its dependency graph. Keep the Penryn runtime pin
 unless a replacement has passed real hardware checks.
 
 Run `bun run check`. The pinned compatibility runtime predates the
-`bun check --no-script` option used by upstream 2.2.0; lint passes on that
+`bun check --no-script` option used by upstream 2.2.5; lint passes on that
 runtime, while typechecking uses upstream's existing CI alternative:
 
 ```sh

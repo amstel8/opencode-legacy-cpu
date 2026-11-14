@@ -1,6 +1,6 @@
-# OpenCode 2.2.5 for older Intel Macs
+# OpenCode 2.3.0 for older Intel Macs
 
-This fork starts at upstream tag `v2.2.5` (`9bbb8ce18c`). It keeps the upstream
+This fork starts at upstream tag `v2.3.0` (`a6b15d33da`). It keeps the upstream
 application and adds a build recipe for Intel Macs without AVX, including the
 Xeon X5690 and Core 2 Duo T9900 running macOS 12.
 
@@ -70,6 +70,8 @@ executable. Do not run v1 against a data directory migrated by v2.
 
 ## Compatibility changes
 
+- Bundle the actual Node `ws` package by absolute path so Bun does not replace
+  it with its older built-in shim. This preserves WebSocket server exports in 2.3.0.
 - Select only the baseline target when `--single --baseline` is requested.
 - Allow Bun resolution errors that are not `Error` instances to reach the
   directory-plugin `index` fallback.
@@ -106,7 +108,7 @@ borrower leaves, the server owner applies a further 30-second idle deadline.
 Native background tasks can extend retention. A living `opencode serve` process
 therefore does not by itself mean the model is still generating.
 
-For the 2.2.5 release, X5690 completed a real request with the local model in
+For the 2.3.0 release, X5690 completed a real request with the local model in
 an isolated data directory, the API reported no active sessions, the TUI
 rendered, and the authenticated routes answered. Repeat the same request, TUI
 start and route checks on the T9900 for every install; a matching version and
@@ -116,24 +118,21 @@ the reported intermittent high CPU usage. Capture active-session state and a
 process sample while that condition is present before attributing it to the
 runtime or T3.
 
-Upstream 2.2.5 is the fifth patch release after 2.2.0 and adds a percentage
-compaction buffer, worktree and shell-mode shortcuts, interactive artifacts,
-persistent desktop terminals, and MCP transport fixes for large stdio messages.
-It keeps the desktop plugin installation, Promise-based `@opencode/ai` root and
-OpenTUI 0.7 TUI plugin requirement from 2.2.0, along with the duplicate-MCP-start
-and concurrent-shutdown fixes from 2.1.4. The legacy patches do not replace the
-session coordinator or change T3's retention policy.
+Upstream 2.3.0 makes subagents run in the background by default, adds
+experimental MCP events and background shell timeouts, and improves local-model
+discovery over slow or tunnelled endpoints. The legacy patches do not replace
+the session coordinator or change T3's retention policy.
 
 ## Updating this fork
 
-Merge a specific upstream v2 release tag into `main`, then check the four
+Merge a specific upstream v2 release tag into `main`, then check the five
 compatibility patches listed above against that tag. Upstream release stamping
 can produce version-only conflicts in package manifests and `bun.lock`; retain
 the new release versions and its dependency graph. Keep the Penryn runtime pin
 unless a replacement has passed real hardware checks.
 
 Run `bun run check`. The pinned compatibility runtime predates the
-`bun check --no-script` option used by upstream 2.2.5; lint passes on that
+`bun check --no-script` option used by upstream 2.3.0; lint passes on that
 runtime, while typechecking uses upstream's existing CI alternative:
 
 ```sh

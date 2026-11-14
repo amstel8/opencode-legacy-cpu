@@ -80,7 +80,7 @@ if (!targets.length) throw new Error(`Unknown build target: ${requestedTarget}`)
 if (!skipInstall)
   await $`bun install --os="*" --cpu="*" --libc="*" @opentui/core@${pkg.dependencies["@opentui/core"]} @opencode/pty@${pkg.dependencies["@opencode/pty"]}`
 const appArchive = path.join(dir, ".cache", "bun-app-archive.bin")
-await Bun.write(appArchive, await buildAppArchive(Script.channel, { skipBuild: skipWebUi }))
+await Bun.write(appArchive, await buildAppArchive(Script.channel, Script.version, { skipBuild: skipWebUi }))
 const appAssetsPlugin: BunPlugin = {
   name: "opencode-app-assets",
   setup(build) {
@@ -117,6 +117,18 @@ const pluginRuntimePlugin: BunPlugin = {
     build.onLoad({ filter: /[/\\]internal[/\\]httpApi(?:Scalar|Swagger)\.js$/ }, () => ({
       contents:
         'export const css = ""; export const javascript = \'document.body.textContent = "Scalar/Swagger UI assets are not bundled in OpenCode"\'',
+      loader: "js",
+    }))
+  },
+}
+// Bun drops `export * from "ws"` in this sideEffects-free module, leaving NodeWS.WebSocketServer undefined and
+// failing every WebSocket upgrade in the compiled binary. Bun's built-in ws has no PerMessageDeflate.
+const wsReexportPlugin: BunPlugin = {
+  name: "ws-named-reexports",
+  setup(build) {
+    build.onLoad({ filter: /platform-node-shared[/\\]dist[/\\]NodeWS\.js$/ }, (args) => ({
+      // An absolute package path avoids the older runtime's built-in ws shim.
+      contents: `export { createWebSocketStream, extension, PerMessageDeflate, Receiver, Sender, subprotocol, WebSocket, WebSocketServer } from ${JSON.stringify(path.join(path.dirname(Bun.resolveSync("ws/package.json", path.dirname(args.path))), "wrapper.mjs"))}`,
       loader: "js",
     }))
   },
@@ -173,6 +185,7 @@ export default { path: file, version: ${JSON.stringify(opencodePty.version)}, sh
       parcelWatcherPlugin,
       opencodePtyPlugin,
       pluginRuntimePlugin,
+      wsReexportPlugin,
       simulationGraphPlugin,
       modelsSnapshot,
     ],
